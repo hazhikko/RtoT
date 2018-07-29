@@ -27,7 +27,6 @@
         console.log(request.method);
         console.log(request.url);
         console.log(request.sendData);
-        //var deferred = new $.Deferred();
         var ret;
         switch(request.method){
             case "postAPI":
@@ -44,12 +43,6 @@
                         case 2:
                         case 3:
                         case 4:
-                            // JSON.parse does not evaluate the attacker's scripts.
-                            // console.log(xhr.response);
-                            // var ret = {
-                            //     "json": xhr.response,
-                            //     "deferred": deferred
-                            // };
                             ret = xhr.response;
                             if(ret !== null){
                                 console.log(ret);

@@ -21,9 +21,9 @@ $(function(){
             Cookies.set("token",data.access_token);
             $("#token").html(Cookies.get("token"));
         }).fail(function(){
-            console.log("失敗しました");
+            console.log("認証情報の取得に失敗しました");
         }).always(function(){
-            console.log("終了しました");
+            console.log("認証情報の取得を終了しました");
         });
     })
 });
