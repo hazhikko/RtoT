@@ -4,7 +4,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
         console.log(rData);
         var cData = createTasWorldTicket(rData);
         console.log(cData);
-        var cPromise = postAPI("https://asia-api.taskworld.com/v1/task.create", cData);
+        var cPromise = postAPI(apiUrl.taskCreate, cData);
         cPromise.done(function(data){
             console.log("postAPI Create");
             console.log(data);
@@ -18,9 +18,9 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
             console.log(data);
             var uData = updateTasWorldTicket(data, rData);
             console.log(uData);
-            var uPromise = postAPI("https://asia-api.taskworld.com/v1/task.update", uData);
+            var uPromise = postAPI(apiUrl.taskUpdate, uData);
             uPromise.done(function(data){
-                if(data.ret.ok){
+                if(data.ok){
                     alert("登録に成功しました");
                 }
             }).fail(function(){
@@ -51,25 +51,28 @@ function acquireRedmineData() {
 
 function createTasWorldTicket(rData) {
         console.log("create start");
-        var token = "737b94e89ce945494cb375c8a451ad7cde69845bf5b6b724c3c1ec7ffe310c2f";
+        var token = userData.token;
+        // var token = "737b94e89ce945494cb375c8a451ad7cde69845bf5b6b724c3c1ec7ffe310c2f";
         if(!token){
             alert("オプションでaccess tokenを取得してください。");
         };
-        var pId = "5b5ad810b9c7c0fb58a5faeb";
+        var pId = userData.pId;
+        // var pId = "5b5ad810b9c7c0fb58a5faeb";
         if(!pId){
             alert("オプションでaccess tokenを取得してください。");
         };
-        var sId = "5b5ad7cc958142ac572ccabd";
+        var sId = userData.sId;
+        // var sId = "5b5ad7cc958142ac572ccabd";
         if(!sId){
             alert("オプションでaccess tokenを取得してください。");
         };
         var lId;
         switch(rData.attributeNum){
             case ("3"):
-                lId = "5b5ad8109a98f946a7db3025";
+                lId = userData.lId.ito;
                 break;
             default:
-                lId = "5b5ad8109a98f946a7db3023";
+                lId = userData.lId.default;
                 break;       
         };
         var cData = {
@@ -85,16 +88,18 @@ function createTasWorldTicket(rData) {
 
 function updateTasWorldTicket(data, rData) {
     console.log("update start");
-    var token = "737b94e89ce945494cb375c8a451ad7cde69845bf5b6b724c3c1ec7ffe310c2f";
+    var token = userData.token;
+    // var token = "737b94e89ce945494cb375c8a451ad7cde69845bf5b6b724c3c1ec7ffe310c2f";
     if(!token){
         alert("オプションでaccess tokenを取得してください。");
     };
-    var tId = data.ret.task.task_id;
+    var tId = data.task.task_id;
     console.log(tId);
     if(!tId){
         alert("オプションでaccess tokenを取得してください。");
     };
-    var sId = "5b5ad7cc958142ac572ccabd";
+    var sId = userData.sId;
+    // var sId = "5b5ad7cc958142ac572ccabd";
     if(!sId){
         alert("オプションでaccess tokenを取得してください。");
     };

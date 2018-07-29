@@ -8,7 +8,7 @@
                 // That fires when a page's URL contains a 'g' ...
                 conditions: [
                     new chrome.declarativeContent.PageStateMatcher({
-                    pageUrl: { urlContains: 'https://my.redmine.jp/' },
+                    pageUrl: { urlContains: redmineDomain },
                     })
                 ],
                 // And shows the extension's page action.
@@ -53,7 +53,7 @@
                             ret = xhr.response;
                             if(ret !== null){
                                 console.log(ret);
-                                sendResponse({ret});
+                                sendResponse(ret);
                             }
                             break;
                     };
