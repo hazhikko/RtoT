@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <title>オプション</title>
+        <script type="text/javascript" src="../js/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="../js/js.cookie.js"></script>
+        <script type="text/javascript" src="../js/options.js"></script>
+    </head>
+    <body>
+        <div>
+            <div>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="user_email" />
+            </div>
+            <div>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="user_password" />
+            </div>
+            <div class="button">
+                <input type="button" id="submit" value="認証情報取得">
+            </div>
+        </div>
+        <div>
+            <label>access_token:</label>
+            <label id="token"></label>
+        </div>
+        <div>
+            <label>project_id:</label>
+            <label id="pId">5b5ad810b9c7c0fb58a5faeb</label>
+        </div>
+        <div>
+            <label>space_id:</label>
+            <label id="sId">5b5ad7cc958142ac572ccabd</label>
+        </div>
+    </body>
+</html>
