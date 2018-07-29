@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <title>オプション</title>
+        <link rel="stylesheet" type="text/css" href="../css/options.css">
         <script type="text/javascript" src="../js/jquery-3.3.1.min.js"></script>
         <script type="text/javascript" src="../js/js.cookie.js"></script>
         <script type="text/javascript" src="../js/const.js"></script>
@@ -25,6 +26,17 @@
         <div>
             <label>access_token:</label>
             <label id="token"></label>
+        </div>
+        <div>
+            <p>
+                認証情報取得ボタンを押してaccess_tokenを取得してください。<br>
+                取得後、以下手順を行ってください。<br>
+                1 Chromeの拡張機能 > RtoT のロード元リンクをクリック<br>
+                2 RtoT/js/const.jsを開き、access_tokenを入力して保存<br>
+                3 Redmineチケットを開く<br>
+                4 extensionボタンを押す<br>
+                → TaskWorldにタスクが追加される
+            </p>
         </div>
     </body>
 </html>
