@@ -1,5 +1,5 @@
 const userData = {
-    "token": "a0545de470e336628e63066f84e3679b38551dce0d69168379c8ed63f5bbb74b",
+    "token": "",
     "sId": "5b5ad7cc958142ac572ccabd",
     "pId": "5b5ad810b9c7c0fb58a5faeb",
     "lId":{
