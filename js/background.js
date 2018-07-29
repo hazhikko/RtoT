@@ -8,7 +8,7 @@
                 // That fires when a page's URL contains a 'g' ...
                 conditions: [
                     new chrome.declarativeContent.PageStateMatcher({
-                    pageUrl: { urlContains: 'https://my.redmine.jp/' },
+                    pageUrl: { urlContains: redmineDomain },
                     })
                 ],
                 // And shows the extension's page action.
@@ -27,7 +27,6 @@
         console.log(request.method);
         console.log(request.url);
         console.log(request.sendData);
-        //var deferred = new $.Deferred();
         var ret;
         switch(request.method){
             case "postAPI":
@@ -44,16 +43,10 @@
                         case 2:
                         case 3:
                         case 4:
-                            // JSON.parse does not evaluate the attacker's scripts.
-                            // console.log(xhr.response);
-                            // var ret = {
-                            //     "json": xhr.response,
-                            //     "deferred": deferred
-                            // };
                             ret = xhr.response;
                             if(ret !== null){
                                 console.log(ret);
-                                sendResponse({ret});
+                                sendResponse(ret);
                             }
                             break;
                     };

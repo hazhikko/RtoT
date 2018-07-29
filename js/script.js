@@ -1,35 +1,48 @@
+
+/**
+ * Chromeのextensionボタンがクリックされたときに発火するListener
+ * 
+ */
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 	if (request == "Action") {
         var rData = acquireRedmineData();
+        console.log("redmineから取得した情報");
         console.log(rData);
-        var cData = createTasWorldTicket(rData);
+        var cData = createTasWorldData(rData);
+        console.log("Task Createに使用する情報");
         console.log(cData);
-        var cPromise = postAPI("https://asia-api.taskworld.com/v1/task.create", cData);
+        var cPromise = postAPI(apiUrl.taskCreate, cData);
         cPromise.done(function(data){
-            console.log("postAPI Create");
+            console.log("Task Createの実行結果");
             console.log(data);
             return data;
         })
         .fail(function(){
-            console.log("postAPI Error")
+            console.log("Task Createに失敗しました")
         });
-        cPromise.then(function(data){
-            console.log("postAPI Updata");
-            console.log(data);
-            var uData = updateTasWorldTicket(data, rData);
+        cPromise.then(function(resCreateData){
+            var uData = updateTasWorldData(resCreateData, rData);
+            console.log("Task Updateに使用する情報");
             console.log(uData);
-            var uPromise = postAPI("https://asia-api.taskworld.com/v1/task.update", uData);
-            uPromise.done(function(data){
-                if(data.ret.ok){
+            var uPromise = postAPI(apiUrl.taskUpdate, uData);
+            uPromise.done(function(resUpdateData){
+                console.log("Task Updateの実行結果");
+                console.log(resUpdateData);
+                if(resUpdateData.ok){
                     alert("登録に成功しました");
                 }
             }).fail(function(){
+                console.log("Task Updateに失敗しました")
                 alert("Errorが発生しました");
             })
         })
 	}
 });
 
+/**
+ * redmineから必要な情報を収集する
+ * @returns {object} rData redmineTicketのurl,title,担当者番号,期日
+ */
 function acquireRedmineData() {
     var rUrl = location.href;
     var tNum = rUrl.split("/");
@@ -49,27 +62,25 @@ function acquireRedmineData() {
     return rData;
 }
 
-function createTasWorldTicket(rData) {
-        console.log("create start");
-        var token = "737b94e89ce945494cb375c8a451ad7cde69845bf5b6b724c3c1ec7ffe310c2f";
+/**
+ * TaskWorldのtask.create実行時に使用するデータの作成
+ * @param {object} rData acquireRedmineData()で収集したredmineの情報
+ * @return {object} cData task.createに渡すデータ
+ */
+function createTasWorldData(rData) {
+        var token = userData.token;
         if(!token){
             alert("オプションでaccess tokenを取得してください。");
         };
-        var pId = "5b5ad810b9c7c0fb58a5faeb";
-        if(!pId){
-            alert("オプションでaccess tokenを取得してください。");
-        };
-        var sId = "5b5ad7cc958142ac572ccabd";
-        if(!sId){
-            alert("オプションでaccess tokenを取得してください。");
-        };
+        var pId = userData.pId;
+        var sId = userData.sId;
         var lId;
         switch(rData.attributeNum){
             case ("3"):
-                lId = "5b5ad8109a98f946a7db3025";
+                lId = userData.lId.ito;
                 break;
             default:
-                lId = "5b5ad8109a98f946a7db3023";
+                lId = userData.lId.default;
                 break;       
         };
         var cData = {
@@ -79,25 +90,19 @@ function createTasWorldTicket(rData) {
             "list_id": lId,
             "title": rData.title
         };
-        console.log("create end");
         return cData;
 }
 
-function updateTasWorldTicket(data, rData) {
-    console.log("update start");
-    var token = "737b94e89ce945494cb375c8a451ad7cde69845bf5b6b724c3c1ec7ffe310c2f";
-    if(!token){
-        alert("オプションでaccess tokenを取得してください。");
-    };
-    var tId = data.ret.task.task_id;
-    console.log(tId);
-    if(!tId){
-        alert("オプションでaccess tokenを取得してください。");
-    };
-    var sId = "5b5ad7cc958142ac572ccabd";
-    if(!sId){
-        alert("オプションでaccess tokenを取得してください。");
-    };
+/**
+ * TaskWorldのtask.update実行時に使用するデータの作成
+ * @param {object} resCreateData acquireRedmineData()で収集したredmineの情報
+ * @param {object} rData acquireRedmineData()で収集したredmineの情報
+ * @return {object} cData task.updateに渡すデータ
+ */
+function updateTasWorldData(resCreateData, rData) {
+    var token = userData.token;
+    var tId = resCreateData.task.task_id;
+    var sId = userData.sId;
     var uData = {
         "access_token": token,
         "space_id": sId,
@@ -107,19 +112,22 @@ function updateTasWorldTicket(data, rData) {
     if(rData.dueDate){
         uData["due_date"] = rData.dueDate;
     };
-    console.log("update end");
     return uData;
 }
 
+/**
+ * POST用関数
+ * @param {string} url APIの接続先
+ * @param {object} sendData APIに送信するPOSTデータ
+ * @return {promise} dfd.promise() 
+ */
 function postAPI(url, sendData){
     var dfd = $.Deferred();
     chrome.runtime.sendMessage({method: "postAPI", url: url, sendData: sendData}, function(response){
         if(response){
-            // console.log(response);
             dfd.resolve(response);
-            // return response;
         }else{
-            console.log("no response");
+            console.log("API response nothing");
             reject();
         }
     });
