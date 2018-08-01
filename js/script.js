@@ -8,40 +8,54 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
         var rData = acquireRedmineData();
         console.log("redmineから取得した情報");
         console.log(rData);
-        var cData = createTasWorldData(rData);
-        console.log("Task Createに使用する情報");
-        console.log(cData);
-        var cPromise = postAPI(apiUrl.taskCreate, cData);
-        cPromise.done(function(data){
+        var accessToken;
+        var gPromise = getLocalStorage("token");
+        gPromise.done(function(data){
             console.log("Task Createの実行結果");
             console.log(data);
+            accessToken = data;
             return data;
         })
         .fail(function(){
-            console.log("Task Createに失敗しました")
+            console.log("tokenの取得に失敗しました")
         });
-        cPromise.then(function(resCreateData){
-            var uData = updateTasWorldData(resCreateData, rData);
-            console.log("Task Updateに使用する情報");
-            console.log(uData);
-            var uPromise = postAPI(apiUrl.taskUpdate, uData);
-            uPromise.done(function(resUpdateData){
-                console.log("Task Updateの実行結果");
-                console.log(resUpdateData);
-                if(resUpdateData.ok){
-                    alert("登録に成功しました");
-                }
-            }).fail(function(){
-                console.log("Task Updateに失敗しました")
-                alert("Errorが発生しました");
+
+        gPromise.then(function(){
+            var cData = createTasWorldData(rData, accessToken);
+            console.log("Task Createに使用する情報");
+            console.log(cData);
+            var cPromise = postAPI(apiUrl.taskCreate, cData);
+            cPromise.done(function(data){
+                console.log("Task Createの実行結果");
+                console.log(data);
+                return data;
             })
-        })
+            .fail(function(){
+                console.log("Task Createに失敗しました")
+            });
+            cPromise.then(function(resCreateData){
+                var uData = updateTasWorldData(resCreateData, rData, accessToken);
+                console.log("Task Updateに使用する情報");
+                console.log(uData);
+                var uPromise = postAPI(apiUrl.taskUpdate, uData);
+                uPromise.done(function(resUpdateData){
+                    console.log("Task Updateの実行結果");
+                    console.log(resUpdateData);
+                    if(resUpdateData.ok){
+                        alert("登録に成功しました");
+                    }
+                }).fail(function(){
+                    console.log("Task Updateに失敗しました")
+                    alert("Errorが発生しました");
+                })
+            })
+        })        
 	}
 });
 
 /**
- * redmineから必要な情報を収集する
- * @returns {object} rData redmineTicketのurl,title,担当者番号,期日
+ * BackLogから必要な情報を収集する
+ * @returns {object} bData BackLogTicketのurl,title,担当者番号,期日
  */
 function acquireRedmineData() {
     var rUrl = location.href;
@@ -67,9 +81,8 @@ function acquireRedmineData() {
  * @param {object} rData acquireRedmineData()で収集したredmineの情報
  * @return {object} cData task.createに渡すデータ
  */
-function createTasWorldData(rData) {
-        var token = userData.token;
-        if(!token){
+function createTasWorldData(rData, accessToken) {
+        if(!accessToken){
             alert("オプションでaccess tokenを取得してください。");
         };
         var pId = userData.pId;
@@ -84,7 +97,7 @@ function createTasWorldData(rData) {
                 break;       
         };
         var cData = {
-            "access_token": token,
+            "access_token": accessToken,
             "space_id": sId,
             "project_id": pId,
             "list_id": lId,
@@ -99,12 +112,11 @@ function createTasWorldData(rData) {
  * @param {object} rData acquireRedmineData()で収集したredmineの情報
  * @return {object} cData task.updateに渡すデータ
  */
-function updateTasWorldData(resCreateData, rData) {
-    var token = userData.token;
+function updateTasWorldData(resCreateData, rData, accessToken) {
     var tId = resCreateData.task.task_id;
     var sId = userData.sId;
     var uData = {
-        "access_token": token,
+        "access_token": accessToken,
         "space_id": sId,
         "task_id": tId,
         "description": rData.rUrl

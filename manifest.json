@@ -27,6 +27,7 @@
             "js": [
                 "js/jquery-3.3.1.min.js",
                 "js/const.js",
+                "js/common.js",
                 "js/script.js"
             ],
             "run_at": "document_start"

@@ -25,12 +25,20 @@
     chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         console.log("background start");
         console.log(request.method);
-        console.log(request.url);
-        console.log(request.sendData);
         var ret;
         switch(request.method){
+            case "setLocalStorage":
+                localStorage.setItem(request.key, request.data);
+                console.log(localStorage.getItem(request.key));
+                sendResponse(true);
+                return true;
+                break;
+            case "getLocalStorage":
+                console.log(localStorage.getItem(request.key));
+                sendResponse(localStorage.getItem(request.key));
+                return true;
+                break;
             case "postAPI":
-                console.log("switch api");
                 var xhr = new XMLHttpRequest();
                 xhr.timeout=3000;
                 xhr.open("POST", request.url);
