@@ -1,7 +1,7 @@
 $(document).ready(function(){
     $("#email").val(Cookies.get("email"));
     $("#password").val(Cookies.get("password"));
-    $("#token").html(userData.token);
+    $("#token").html(Cookies.get("token"));
     console.log("読み込み完了");
 });
 
@@ -17,9 +17,22 @@ $(function(){
             apiUrl.auth,
             sentData
         ).done(function(data){
+            console.log("Task Createの実行結果");
             console.log(data);
             Cookies.set("token",data.access_token);
-            $("#token").html(Cookies.get("token"));
+            var promise = setLocalStorage("token", data.access_token);
+            promise.done(function(data){
+                if(data){
+                    alert("認証情報の取得に成功しました");
+                    console.log(data);
+                    $("#token").html(Cookies.get("token"));
+                    return data;
+                }
+            })
+            .fail(function(){
+                console.log("Task Createに失敗しました")
+            });
+            
         }).fail(function(){
             console.log("認証情報の取得に失敗しました");
         }).always(function(){
