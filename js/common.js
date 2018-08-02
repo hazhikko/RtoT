@@ -34,3 +34,22 @@ function getLocalStorage(key){
     });
     return dfd.promise();
 }
+
+/**
+ * POST用関数
+ * @param {string} url APIの接続先
+ * @param {object} sendData APIに送信するPOSTデータ
+ * @return {promise} dfd.promise() 
+ */
+function postAPI(url, sendData){
+    var dfd = $.Deferred();
+    chrome.runtime.sendMessage({method: "postAPI", url: url, sendData: sendData}, function(response){
+        if(response){
+            dfd.resolve(response);
+        }else{
+            console.log("API response nothing");
+            reject();
+        }
+    });
+    return dfd.promise();
+};
