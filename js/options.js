@@ -17,7 +17,7 @@ $(function(){
             apiUrl.auth,
             sentData
         ).done(function(data){
-            console.log("Task Createの実行結果");
+            console.log("auth の実行結果");
             console.log(data);
             Cookies.set("token",data.access_token);
             var promise = setLocalStorage("token", data.access_token);
@@ -30,7 +30,7 @@ $(function(){
                 }
             })
             .fail(function(){
-                console.log("Task Createに失敗しました")
+                console.log("auth に失敗しました")
             });
             
         }).fail(function(){
