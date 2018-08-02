@@ -1,6 +1,6 @@
 {
     "name": "RtoT",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "manifest_version": 2,
     "description": "RedmineのチケットをTaskWorldにコピーする拡張機能",
     "icons": {
@@ -27,9 +27,10 @@
             "js": [
                 "js/jquery-3.3.1.min.js",
                 "js/const.js",
+                "js/common.js",
                 "js/script.js"
             ],
-            "run_at": "document_start"
+            "run_at": "document_end"
         }
     ],
     "background": {
