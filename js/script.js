@@ -63,10 +63,29 @@ function acquireRedmineData() {
     tNum = tNum[tNum.length - 1];
     var subject = $(".subject").text().replace(/\r?\n/g,"");
     var title = "#" + tNum + "「" + subject + "」";
-    var attributeNum = $(".assigned-to a").attr("href").split("/");
-    attributeNum = attributeNum[attributeNum.length - 1];
-    var dueDate = $(".due-date .value").text().split("/");
-    dueDate = dueDate[0] + "-" + dueDate[1] + "-" + dueDate[2] + "T10:00:00.000Z";
+    var attributeNum;
+    try {
+        attributeNum = $(".assigned-to a").attr("href").split("/");
+        attributeNum = attributeNum[attributeNum.length - 1];
+    }
+    catch (e) {
+        attributeNum = "";
+    }
+    var dueDate;
+    try {
+        dueDate = $(".due-date .value").text();
+        // Redmineの作りによって区切り文字が違うようなので分岐
+        if(dueDate.indexOf("/") != -1){
+            dueDate = dueDate.split("/");
+            dueDate = dueDate[0] + "-" + dueDate[1] + "-" + dueDate[2] + "T10:00:00.000Z";
+        }else if(dueDate.indexOf("-") != -1){
+            dueDate = dueDate + "T10:00:00.000Z";
+        }
+    }
+    catch (e) {
+        attributeNum = "";
+    }
+    
     var rData = {
         "rUrl": rUrl,
         "title": title,
