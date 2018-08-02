@@ -18,7 +18,7 @@ default_space_idでいいのか？
 workspacesにもdefault_space_idが含まれていますが、複数のworkspacesを作る方法がわかりませんでした。
 とにかく、使用するspace_idを設定してください。
 
-2 userData > sId を対象のspace_idに変更する。
+2 userData > pId を対象のproject_idに変更する。
 取得方法：https://asia-api.taskworld.com/#get-all-projects
 プロジェクトが複数ある場合は、複数個返ってきます。
 titleを見て使用するIDを探してください。
@@ -51,5 +51,4 @@ createTasWorldData()のswitch文に、必要な分だけ分岐を追加してく
 1 Chrome　でchrome://extensions/ にアクセス
 2 RtoTのオプションをクリック
 3 TaskWorldのアカウント情報（メールアドレス、パスワード）を入力してaccess_tokenを取得
-4 js/const.jsのtokenを取得した情報に変更する
 
