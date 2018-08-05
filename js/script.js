@@ -54,8 +54,8 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 /**
- * BackLogから必要な情報を収集する
- * @returns {object} bData BackLogTicketのurl,title,担当者番号,期日
+ * Redmineから必要な情報を収集する
+ * @returns {object} bData RedmineTicketのurl,title,担当者番号,期日
  */
 function acquireRedmineData() {
     var rUrl = location.href;
